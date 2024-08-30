@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blowfish Encryption/Decryption</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 500px; margin: auto; padding: 20px; }
+        input, select { width: 100%; padding: 10px; margin: 5px 0; }
+        button { padding: 10px; background-color: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        #result { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Blowfish Encryption/Decryption</h2>
+        <form id="blowfish-form">
+            <label for="mode">Mode:</label>
+            <select id="mode" name="mode">
+                <option value="encrypt">Encrypt</option>
+                <option value="decrypt">Decrypt</option>
+            </select>
+
+            <label for="data">Data (in Hex):</label>
+            <input type="text" id="data" name="data" required>
+
+            <label for="key">Key (as array, e.g., [0xAABB0918, 0x2736CCDD]):</label>
+            <input type="text" id="key" name="key" required>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('blowfish-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const mode = document.getElementById('mode').value;
+            const data = document.getElementById('data').value;
+            const key = document.getElementById('key').value;
+
+            fetch(`/${mode}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: data, key: key })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = `Result: ${data.ciphertext || data.plaintext}`;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
